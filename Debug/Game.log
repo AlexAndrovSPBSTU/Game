@@ -1,1 +1,7 @@
-﻿  Game.vcxproj -> D:\Projects\Practise\Game — копия\Debug\Game.exe
+﻿  main.cpp
+d:\projects\practise\game2\map.h(51): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
+d:\projects\practise\game2\map.h(66): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
+d:\projects\practise\game2\map.h(77): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+d:\projects\practise\game2\map.h(78): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+d:\projects\practise\game2\content.h(22): warning C4551: в вызове функции отсутствует список аргументов
+  Game.vcxproj -> D:\Projects\Practise\Game2\Debug\Game.exe

@@ -1,4 +1,6 @@
 #include <SFML/Graphics.hpp>
+#include "Content.h"
+#include "Map.h"
 
 using namespace sf;
 using namespace std;
@@ -9,73 +11,49 @@ float delay = 0.3f;
 
 int main()
 {
-	RenderWindow window(VideoMode(1920, 1080), "The Game!");
+	RenderWindow window(VideoMode(1920, 1080), "The tanks!",sf::Style::Fullscreen);
+	Content *content = new Content();
+	Event event;
+	Clock clock;
+	float time;
 
-	Texture tanks, castleT, wall;
-	tanks.loadFromFile("sprites.png");
-	castleT.loadFromFile("castle.gif");
-	wall.loadFromFile("wall.png");
-
-	Sprite tank(tanks), castle1(castleT), castle2(castleT), pieceOfWall(wall);
-
-	//Танк
-	tank.setTextureRect(IntRect(0, 0, 180, 200));
-	tank.setScale(Vector2f(0.5, 0.5));
-	//Первая башня
-	castle1.setPosition(340, 340);
-	castle1.setScale(Vector2f(0.5, 0.5));
-	//Вторая башня
-	castle2.setPosition(1580, 340);
-	castle2.setScale(Vector2f(0.5, 0.5));
-	//Кусок стены
-	pieceOfWall.setScale(Vector2f(0.1f, 0.15f));
-	pieceOfWall.rotate(90);
-	pieceOfWall.setPosition(240, 340);
-
-	for (int i = 0; i < 7; i++) {
-	}
-
-
-	while (window.isOpen())
-	{
-		// Обрабатываем события в цикле
-		Event event;
-		Clock clock;
-		float time;
-		// Получаем время, прошедшее с начала отсчета, и конвертируем его в секунды
-		time = clock.getElapsedTime().asSeconds();
-		clock.restart();
-		timer += time;
-
-		//Если timer выходит за частоту выполняется тело условия
-		if (timer > delay) {
+		
+	try {
 
 
 
-			timer = 0;
-		}
-
-		while (window.pollEvent(event))
+		while (window.isOpen())
 		{
+			// Получаем время, прошедшее с начала отсчета, и конвертируем его в секунды
+			time = clock.getElapsedTime().asSeconds();
+			clock.restart();
+			timer += time;
 
-			// Пользователь нажал на «крестик» и хочет закрыть окно?
-			if (event.type == Event::Closed)
-			{
-				// тогда закрываем его
-				window.close();
+			//Если timer выходит за частоту выполняется тело условия
+			if (timer > delay) {
+				//Управление
+				content->loadMoving();
+
+				timer = 0;
 			}
 
+
+			while (window.pollEvent(event))
+			{
+				if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape)
+					window.close();
+			}
+
+			//Прорисовка элементов
+			window.clear();
+			content->loadMap(&window);
+			window.display();
 		}
-
-		// Установка цвета фона - белый
-		window.clear(Color::White);
-
-		window.draw(tank);
-		window.draw(castle1);
-		window.draw(castle2);
-		window.draw(pieceOfWall);
-		window.display();
 	}
+	catch (string ex) {
+		//std::cout << ex << std::endl;
+	}
+
 
 	return 0;
 }
