@@ -1,7 +1,14 @@
 ﻿  main.cpp
 d:\projects\practise\game2\map.h(51): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
-d:\projects\practise\game2\map.h(66): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
-d:\projects\practise\game2\map.h(77): warning C4244: =: преобразование "double" в "float", возможна потеря данных
-d:\projects\practise\game2\map.h(78): warning C4244: =: преобразование "double" в "float", возможна потеря данных
-d:\projects\practise\game2\content.h(22): warning C4551: в вызове функции отсутствует список аргументов
+d:\projects\practise\game2\map.h(68): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
+d:\projects\practise\game2\map.h(79): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+d:\projects\practise\game2\map.h(80): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+d:\projects\practise\game2\map.h(81): warning C4305: аргумент: усечение из "double" в "float"
+d:\projects\practise\game2\map.h(82): warning C4305: аргумент: усечение из "double" в "float"
+d:\projects\practise\game2\map.h(90): warning C4305: -=: усечение из "double" в "float"
+d:\projects\practise\game2\map.h(92): warning C4305: +=: усечение из "double" в "float"
+d:\projects\practise\game2\map.h(94): warning C4305: -=: усечение из "double" в "float"
+d:\projects\practise\game2\map.h(96): warning C4305: +=: усечение из "double" в "float"
+d:\projects\practise\game2\content.h(23): warning C4551: в вызове функции отсутствует список аргументов
+d:\projects\practise\game2\main.cpp(10): warning C4305: инициализация: усечение из "double" в "float"
   Game.vcxproj -> D:\Projects\Practise\Game2\Debug\Game.exe

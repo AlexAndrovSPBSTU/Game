@@ -7,7 +7,7 @@ using namespace std;
 
 float timer = 0;
 //Частота обновления
-float delay = 0.3f;
+float delay = 1./8000.f;
 
 int main()
 {

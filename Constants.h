@@ -2,7 +2,7 @@
 
 #define PIXEL_IN_CELL 40
 
-#define TANKS_SPEED 0.25
+#define TANKS_SPEED 0.4
 
 enum direction {
 	Up,

@@ -15,20 +15,30 @@ public:
 		//Прогрузка карты
 		map->load(window);
 
-		loadMoving();
+		//loadMoving();
 	}
 
 	void loadMoving() {
-		if (Keyboard::isKeyPressed) {
-			//Прогрузка изменения движений
+		bool flag = false; 
+		if (Keyboard::isKeyPressed) {	
 			if (Keyboard::isKeyPressed(Keyboard::Key::W))
 				map->tank1->move(direction::Up);
 			if (Keyboard::isKeyPressed(Keyboard::Key::S))
+			{
+				flag = true;
 				map->tank1->move(direction::Down);
-			if (Keyboard::isKeyPressed(Keyboard::Key::A))
-				map->tank1->move(direction::Left);
-			if (Keyboard::isKeyPressed(Keyboard::Key::D))
+			}
+			if (Keyboard::isKeyPressed(Keyboard::Key::A) && flag)
 				map->tank1->move(direction::Right);
+			if (Keyboard::isKeyPressed(Keyboard::Key::A) && !flag)
+				map->tank1->move(direction::Left);
+			if (Keyboard::isKeyPressed(Keyboard::Key::D) && flag)
+				map->tank1->move(direction::Left);
+			if (Keyboard::isKeyPressed(Keyboard::Key::D) && !flag)
+				map->tank1->move(direction::Right);
+			//Прогрузка изменения движений
+
+
 
 
 
