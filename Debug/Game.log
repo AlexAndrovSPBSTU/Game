@@ -1,14 +1,33 @@
 ﻿  main.cpp
-d:\projects\practise\game2\map.h(51): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
-d:\projects\practise\game2\map.h(68): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
-d:\projects\practise\game2\map.h(79): warning C4244: =: преобразование "double" в "float", возможна потеря данных
-d:\projects\practise\game2\map.h(80): warning C4244: =: преобразование "double" в "float", возможна потеря данных
-d:\projects\practise\game2\map.h(81): warning C4305: аргумент: усечение из "double" в "float"
-d:\projects\practise\game2\map.h(82): warning C4305: аргумент: усечение из "double" в "float"
-d:\projects\practise\game2\map.h(90): warning C4305: -=: усечение из "double" в "float"
-d:\projects\practise\game2\map.h(92): warning C4305: +=: усечение из "double" в "float"
-d:\projects\practise\game2\map.h(94): warning C4305: -=: усечение из "double" в "float"
-d:\projects\practise\game2\map.h(96): warning C4305: +=: усечение из "double" в "float"
-d:\projects\practise\game2\content.h(23): warning C4551: в вызове функции отсутствует список аргументов
+d:\projects\practise\game2\map.h(52): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
+d:\projects\practise\game2\map.h(64): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
+d:\projects\practise\game2\map.h(78): warning C4244: +=: преобразование "double" в "float", возможна потеря данных
+d:\projects\practise\game2\map.h(79): warning C4244: +=: преобразование "double" в "float", возможна потеря данных
+d:\projects\practise\game2\map.h(104): warning C4244: аргумент: преобразование "int" в "float", возможна потеря данных
+d:\projects\practise\game2\map.h(118): warning C4244: +=: преобразование "double" в "T", возможна потеря данных
+          with
+          [
+              T=float
+          ]
+d:\projects\practise\game2\map.h(119): warning C4244: +=: преобразование "double" в "T", возможна потеря данных
+          with
+          [
+              T=float
+          ]
+d:\projects\practise\game2\map.h(121): warning C4244: аргумент: преобразование "float" в "int", возможна потеря данных
+d:\projects\practise\game2\map.h(128): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+d:\projects\practise\game2\map.h(129): warning C4244: =: преобразование "double" в "float", возможна потеря данных
+d:\projects\practise\game2\map.h(130): warning C4305: аргумент: усечение из "double" в "float"
+d:\projects\practise\game2\map.h(131): warning C4305: аргумент: усечение из "double" в "float"
+d:\projects\practise\game2\map.h(141): warning C4305: -=: усечение из "double" в "float"
+d:\projects\practise\game2\map.h(143): warning C4305: +=: усечение из "double" в "float"
+d:\projects\practise\game2\map.h(145): warning C4305: -=: усечение из "double" в "float"
+d:\projects\practise\game2\map.h(147): warning C4305: +=: усечение из "double" в "float"
+d:\projects\practise\game2\map.h(163): warning C4018: <: несоответствие типов со знаком и без знака
+d:\projects\practise\game2\map.h(194): warning C4018: <: несоответствие типов со знаком и без знака
+d:\projects\practise\game2\map.h(209): warning C4018: <: несоответствие типов со знаком и без знака
+d:\projects\practise\game2\map.h(379): warning C4018: <: несоответствие типов со знаком и без знака
+d:\projects\practise\game2\map.h(384): warning C4018: <: несоответствие типов со знаком и без знака
+d:\projects\practise\game2\content.h(30): warning C4551: в вызове функции отсутствует список аргументов
 d:\projects\practise\game2\main.cpp(10): warning C4305: инициализация: усечение из "double" в "float"
   Game.vcxproj -> D:\Projects\Practise\Game2\Debug\Game.exe

@@ -9,17 +9,24 @@ private:
 public:
 	Content() {
 		map = new Map();
+	
 	}
 
 	void loadMap(RenderWindow* window){
 		//Прогрузка карты
-		map->load(window);
+		map->update(window);
 
 		//loadMoving();
 	}
 
 	void loadMoving() {
 		bool flag = false; 
+
+		map->tank1->updateProjectiles();
+		map->tank2->updateProjectiles();
+		map->tank1->isCollided();
+		map->tank2->isCollided();
+
 		if (Keyboard::isKeyPressed) {	
 			if (Keyboard::isKeyPressed(Keyboard::Key::W))
 				map->tank1->move(direction::Up);
@@ -38,8 +45,9 @@ public:
 				map->tank1->move(direction::Right);
 			//Прогрузка изменения движений
 
-
-
+			if (Keyboard::isKeyPressed(Keyboard::Key::Space))
+				map->tank1->shoot();
+				
 
 
 			if (Keyboard::isKeyPressed(Keyboard::Key::Up))
@@ -50,6 +58,9 @@ public:
 				map->tank2->move(direction::Left);
 			if (Keyboard::isKeyPressed(Keyboard::Key::Right))
 				map->tank2->move(direction::Right);
+			if (Keyboard::isKeyPressed(Keyboard::Key::Enter))
+				map->tank2->shoot();
+
 		}
 	}
 
