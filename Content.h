@@ -49,6 +49,13 @@ public:
 				map->tank1->shoot();
 				
 
+			if (Keyboard::isKeyPressed(Keyboard::Key::F1))
+				map->createTanks();
+
+
+
+
+
 
 			if (Keyboard::isKeyPressed(Keyboard::Key::Up))
 				map->tank2->move(direction::Up);

@@ -1,9 +1,12 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include "Content.h"
 #include "Constants.h"
 #include <string>
 #include <iostream>
 #include <vector>
+#include <math.h>
+
 #pragma once
 
 
@@ -11,6 +14,11 @@ using namespace sf;
 using std::string;
 class Map;
 class Tank;
+class Heart;
+template <typename T> inline constexpr
+int signum(T x, std::true_type is_signed) {
+	return (T(0) < x) - (x < T(0));
+}
 
 class Object {
 
@@ -28,7 +36,7 @@ public:
 
 	Sprite* getSprite()
 	{
-		return this->sprite;
+		return this->sprite; 
 	}
 
 
@@ -61,64 +69,95 @@ private:
 public:
 	Projectile(const string fileTexture, Vector2f startPosition, int angle, float speed) : Object(fileTexture)
 	{
-		sprite->rotate(angle);
-		sprite->setPosition(startPosition);
+		sprite->rotate(angle+90);
+		std::cout << angle << "\n";
+		float offset = -40;
+		sprite->setPosition(Vector2f(startPosition.x + (sprite->getGlobalBounds().width / 2 + offset) * sin(sprite->getRotation() * 3.14 / 180), startPosition.y + (sprite->getGlobalBounds().height / 2 + offset) * cos(sprite->getRotation() * 3.14 / 180) ) );
 		this->speed = speed;
-		x = startPosition.x;
-		y = startPosition.y;
-		sprite->setScale(Vector2f(0.1f, 0.1f));
-
-
-
+		x = sprite->getPosition().x;
+		y = sprite->getPosition().y;
+		sprite->setScale(Vector2f(0.5f, 0.5f));
 
 	}
 
 	void move()
 	{
-		x += speed * sin((-sprite->getRotation()) * 3.14 / 180);
-		y += speed * cos((-sprite->getRotation()) * 3.14 / 180);
+		x += speed * cos(-(sprite->getRotation()) * 3.14 / 180) ;
+		y += speed * sin((sprite->getRotation()) * 3.14 / 180);
 
 		this->sprite->setPosition(x, y);
 	}
 
 };
 
+class Heart :public Object {
+public:
+	Heart(std::string fileTexture, Vector2f position) :Object(fileTexture) {
+		sprite->setPosition(position);
+		sprite->setScale(Vector2f(0.5f, 0.5f));
+		}
+
+};
 
 class Tank : public Object {
 private:
-	float dx, dy,x,y;
+	float dx, dy, x, y;
 	float speed = 0.1f;
-	Map* map;
 	Tank* enemyTank;
-	
+
 	Clock shootTimer;
 	float cooldown = 1.f;
-	
+	int health = 3;
+	Sound soundShoot;
+	Sound soundMiss;
+	Sound soundHit;
+	Sound soundDie;
+
 
 public:
 	float time;
-	std::vector <Projectile> *proj;
-	
-	Tank(const string fileTexture, int angle,Vector2f vector): Object(fileTexture) {
+	std::vector<Heart>* healthBar;
+	std::vector <Projectile>* proj;
+	bool dead = false;
+
+	Tank(const string fileTexture, int angle, Vector2f vector) : Object(fileTexture) {
 		sprite->setScale(Vector2f(0.7f, 0.7f));
 		sprite->rotate(angle);
 		sprite->setPosition(vector);
 		x = vector.x;
 		y = vector.y;
-		this->map = map;
+
 		sprite->setOrigin(Vector2f(76.f, 82.5f));
 		proj = new std::vector<Projectile>();
+		healthBar = new std::vector<Heart>();
+		SoundBuffer* soundBuffer = new SoundBuffer();
+		SoundBuffer* soundBuffer2 = new SoundBuffer();
+		SoundBuffer* soundBuffer3 = new SoundBuffer();
+		SoundBuffer* soundBuffer4 = new SoundBuffer();
+		soundBuffer->loadFromFile("shot.wav");
+		soundBuffer2->loadFromFile("miss.wav");
+		soundBuffer3->loadFromFile("hit.wav");
+		soundBuffer4->loadFromFile("death.wav");
+		soundShoot.setBuffer(*soundBuffer);
+		soundMiss.setBuffer(*soundBuffer2);
+		soundHit.setBuffer(*soundBuffer3);
+		soundDie.setBuffer(*soundBuffer4);
 	}
+	void createHealthBar(Vector2f position)
+	{
+		for (int i = 0; i < 3; i++)
+			healthBar->push_back(*(new Heart("red.png", Vector2f(position.x + i * 64, position.y))));
+	}
+
 	void shoot()
 	{
-		if (shootTimer.getElapsedTime().asSeconds() < cooldown)
+		if (shootTimer.getElapsedTime().asSeconds() < cooldown|| dead)
 			return;
+		soundShoot.play();
 		shootTimer.restart();
-		Vector2f projectileSpawn = sprite->getPosition();
-		projectileSpawn.x += 1 * sin((90 - sprite->getRotation()) * 3.14 / 180);
-		projectileSpawn.y += 1 * cos((-90 - sprite->getRotation()) * 3.14 / 180);
+		Vector2f projectileSpawn = Vector2f( sprite->getPosition().x + sprite->getGlobalBounds().width/2 * cos(sprite->getRotation() * 3.14 / 180), sprite->getPosition().y + sprite->getGlobalBounds().height / 2 * sin(sprite->getRotation() * 3.14 / 180));
 
-		proj->push_back(Projectile("tank1.png", projectileSpawn, sprite->getRotation(), 1));
+		proj->push_back(*(new Projectile("bullet1.png", projectileSpawn, sprite->getRotation(), 1)));
 	}
 
 	void move(direction d) {
@@ -196,6 +235,7 @@ public:
 				{
 					std::swap(proj->at(j), proj->back());
 					proj->pop_back();
+					soundMiss.play();
 				}
 
 
@@ -211,6 +251,8 @@ public:
 			{
 				std::swap(proj->at(j), proj->back());
 				proj->pop_back();
+				enemyTank->takeHit();
+				soundHit.play();
 			}
 
 		if (tankBounds.intersects(enemyTank->getSprite()->getGlobalBounds()))
@@ -222,11 +264,26 @@ public:
 
 		return Vector2f(-100., -100.);
 	}
+	void takeHit()
+	{
+		health--;
+		if (health == 0)
+		{
+			dead = true;
+			sprite->setPosition(-100, -100);
+			x = -100;
+			y = -100;
+			soundDie.play();
+			
+		}
+		healthBar->pop_back();
+	}
 
 	void setEnemyTank(Tank * tank) {
 		this->enemyTank = tank;
 	}
 };
+
 
 
 class Map : public Object
@@ -247,6 +304,7 @@ public:
 	//
 	Castle* castle1;
 	Castle* castle2;
+
 
 
 	//1- где надо установить
@@ -271,17 +329,9 @@ public:
 		for (int n = 6; n < 21; n++) {
 			world[n][7] = 1;
 			world[n][40] = 1; 
+			//world[n][24] = 1;
 		}
-										//Синие
-		//Танк
-		world[15][3] = 2;
-		//Башня
-		world[17][9] = 4;
-										//Красные
-		//Танк
-		world[13][46] = 3;
-		//Башня
-		world[10][39] = 5;
+
 	}
 
 	Map() : Object("background.png") {
@@ -293,11 +343,23 @@ public:
 		castle1 = new Castle("castle1.png", 0);
 		castle2 = new Castle("castle2.png", 0);
 
-		tank1 = new Tank("tank1.png", -90, Vector2f(600, 720));
-		tank2 = new Tank("tank2.png", 90, Vector2f(1240, 520));
+		
 
-		tank1->setEnemyTank(tank2);
-		tank2->setEnemyTank(tank1);
+		createTanks();
+
+		
+	}
+
+	void createTanks()
+	{			
+
+			tank1 = new Tank("tank1.png", -90, Vector2f(150, 720));
+			tank2 = new Tank("tank2.png", 90, Vector2f(1780, 320));
+
+			tank1->setEnemyTank(tank2);
+			tank2->setEnemyTank(tank1);
+			tank1->createHealthBar(Vector2f(100, 940));
+			tank2->createHealthBar(Vector2f(1600, 940));
 
 	}
 
@@ -328,53 +390,20 @@ public:
 
 		for (int m = 0; m < 27; m++) {
 			for (int n = 0; n < 48; n++) {
-				switch (world[m][n])
+				if(world[m][n] == 1)
 				{
-				case 1:
 					wall->getSprite()->setPosition(Vector2f((float)((n * PIXEL_IN_CELL) - 15), (float)((m * PIXEL_IN_CELL) - 5)));
 					window->draw(*wall->getSprite());
-
-					break;
-					//case 2:
-					//	tank1->getSprite()->setPosition(Vector2f((float)((n * PIXEL_IN_CELL) - 15), (float)((m * PIXEL_IN_CELL) - 5)));
-					//	window->draw(*tank1->getSprite());
-					//	break;
-					//case 3:
-					//	tank2->getSprite()->setPosition(Vector2f((float)((n * PIXEL_IN_CELL) - 15), (float)((m * PIXEL_IN_CELL) - 5)));
-					//	window->draw(*tank2->getSprite());
-					//	break;
-
-				case 4:
-					castle1->getSprite()->setPosition(Vector2f((float)((n * PIXEL_IN_CELL) - 15), (float)((m * PIXEL_IN_CELL) - 5)));
-					window->draw(*castle1->getSprite());
-					break;
-
-				case 5:
-					castle2->getSprite()->setPosition(Vector2f((float)((n * PIXEL_IN_CELL) - 15), (float)((m * PIXEL_IN_CELL) - 5)));
-					window->draw(*castle2->getSprite());
-					break;
-				case 6:
-
-					if(n==7)
-						std::cout << (float)((n * PIXEL_IN_CELL) - 15) << "\t\t" << (float)((m * PIXEL_IN_CELL) - 5) << std::endl;
-
-
-						//std::cout << (float)((n * PIXEL_IN_CELL) - 15) << "\t\t" << (float)((m * PIXEL_IN_CELL) - 5) << std::endl;
-
-					break;
-
 				}
-
-
-
 			}
 
 		}
 		//std::cout << std::endl;
 
-
-		window->draw(*tank1->getSprite());
-		window->draw(*tank2->getSprite());
+		if(!tank1->dead)
+			window->draw(*tank1->getSprite());
+		if(!tank2->dead)
+			window->draw(*tank2->getSprite());
 
 		for (int i = 0; i < tank1->proj->size(); i++)
 		{
@@ -387,7 +416,11 @@ public:
 		}
 
 
-
+		for (int i = 0; i < tank1->healthBar->size(); i++)
+			window->draw(*tank1->healthBar->at(i).getSprite());
+		
+		for (int i = 0; i < tank2->healthBar->size(); i++)
+			window->draw(*tank2->healthBar->at(i).getSprite());
 
 
 	}

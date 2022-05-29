@@ -16,43 +16,39 @@ int main()
 	Event event;
 	Clock clock;
 	float time;
-
+	sf::Music music;
 		
-	try {
+	music.openFromFile("ost.ogg");
+	music.play();
 
+	while (window.isOpen())
+	{
+		// Получаем время, прошедшее с начала отсчета, и конвертируем его в секунды
+		time = clock.getElapsedTime().asSeconds();
+		clock.restart();
+		timer += time;
 
+		//Если timer выходит за частоту выполняется тело условия
+		if (timer > delay) {
+			//Управление
+			content->loadMoving();
 
-		while (window.isOpen())
-		{
-			// Получаем время, прошедшее с начала отсчета, и конвертируем его в секунды
-			time = clock.getElapsedTime().asSeconds();
-			clock.restart();
-			timer += time;
-
-			//Если timer выходит за частоту выполняется тело условия
-			if (timer > delay) {
-				//Управление
-				content->loadMoving();
-
-				timer = 0;
-			}
-
-
-			while (window.pollEvent(event))
-			{
-				if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape)
-					window.close();
-			}
-
-			//Прорисовка элементов
-			window.clear();
-			content->loadMap(&window);
-			window.display();
+			timer = 0;
 		}
+
+
+		while (window.pollEvent(event))
+		{
+			if (event.type == sf::Event::KeyReleased && event.key.code == sf::Keyboard::Escape)
+				window.close();
+		}
+
+		//Прорисовка элементов
+		window.clear();
+		content->loadMap(&window);
+		window.display();
 	}
-	catch (string ex) {
-		//std::cout << ex << std::endl;
-	}
+
 
 
 	return 0;
